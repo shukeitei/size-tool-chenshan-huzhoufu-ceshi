@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>尺码推荐 · 它小灶和它的边牧</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#FDE8C8;background-image:radial-gradient(circle,#D4A870 1.2px,transparent 1.2px);background-size:12px 12px;font-family:"PingFang SC","Microsoft YaHei",sans-serif;color:#2A1810;min-height:100vh}
+.wrap{max-width:440px;margin:0 auto;padding:20px 16px 56px}
+
+/* HEADER */
+.top{text-align:center;padding:22px 0 12px}
+.title-box{display:inline-block;background:#C4714A;color:#fff;font-size:17px;font-weight:900;padding:7px 16px;border:2px solid #2A1810;box-shadow:3px 3px 0 #2A1810;font-family:monospace;letter-spacing:.08em;margin-bottom:7px}
+.top p{font-size:11px;color:#8B6355;font-family:monospace;letter-spacing:.06em;margin-bottom:5px}
+.brand-pill{display:inline-block;font-size:10px;color:#C4714A;font-family:monospace;letter-spacing:.1em;font-weight:700;border:1px solid #E8B898;padding:2px 10px;background:#FFF5EC}
+
+/* PROGRESS */
+.steps{display:flex;justify-content:center;gap:3px;margin-bottom:18px;align-items:center}
+.sq-step{width:14px;height:14px;background:#DDD0C8;border:2px solid #B89A8A;transition:all .15s}
+.sq-step.active{width:36px;background:#C4714A;border-color:#8B4A28}
+.sq-step.done{background:#E8A87C;border-color:#C4714A}
+.sq-line{width:6px;height:2px;background:#C8B0A0}
+
+/* CARD WRAP */
+.card-wrap{position:relative}
+.btn-restart{position:absolute;top:-38px;right:0;font-size:11px;font-family:monospace;font-weight:700;color:#8B6355;background:#FDE8C8;border:1.5px solid #C8B0A0;box-shadow:2px 2px 0 #A89080;padding:4px 10px;cursor:pointer;letter-spacing:.04em;transition:all .08s;display:none}
+.btn-restart:hover{background:#fff;color:#C4714A;border-color:#C4714A}
+.btn-restart:active{box-shadow:1px 1px 0 #A89080;transform:translate(1px,1px)}
+
+/* CARD */
+.card{background:#fff;border:2px solid #2A1810;box-shadow:4px 4px 0 #2A1810;padding:22px 20px}
+.stag{font-size:10px;font-weight:700;color:#C4714A;letter-spacing:.12em;text-transform:uppercase;font-family:monospace;margin-bottom:5px;border-left:3px solid #C4714A;padding-left:7px}
+.sq{font-size:16px;font-weight:700;color:#2A1810;margin-bottom:4px;line-height:1.35}
+.sh{font-size:12px;color:#A88B7A;margin-bottom:16px;line-height:1.55}
+
+/* INPUTS */
+.fl{display:block;font-size:11px;color:#5A3A2B;font-weight:700;margin-bottom:5px;margin-top:14px;font-family:monospace;letter-spacing:.04em}
+.fl:first-of-type{margin-top:0}
+input[type=text],input[type=number]{width:100%;border:2px solid #2A1810;padding:11px 13px;font-size:15px;color:#2A1810;background:#FDF5F0;outline:none;font-family:inherit;box-shadow:2px 2px 0 #8B6355;transition:border-color .15s}
+input:focus{border-color:#C4714A;box-shadow:2px 2px 0 #C4714A;background:#fff}
+
+/* GENDER BUTTONS (衬衫用) */
+.grow{display:flex;align-items:center;gap:10px;margin-top:14px}
+.glbl{font-size:11px;color:#8B6355;white-space:nowrap;font-family:monospace;font-weight:700}
+.gbtns{display:flex;gap:6px}
+.gbtn{padding:6px 14px;border:2px solid #DDD0C8;background:#FDF5F0;font-size:12px;cursor:pointer;color:#8B6355;font-family:monospace;font-weight:700;box-shadow:2px 2px 0 #C8B0A0;transition:all .08s}
+.gbtn.on{border-color:#C4714A;color:#C4714A;background:#FFF0E0;box-shadow:2px 2px 0 #8B4A28}
+.gbtn:active{box-shadow:1px 1px 0 #C8B0A0;transform:translate(1px,1px)}
+
+/* PRIMARY BTN */
+.bp{display:block;width:100%;padding:13px;border:2px solid #2A1810;font-size:14px;font-weight:700;cursor:pointer;background:#C4714A;color:#fff;font-family:monospace;margin-top:16px;box-shadow:3px 3px 0 #2A1810;transition:box-shadow .08s,transform .08s;letter-spacing:.06em;text-transform:uppercase}
+.bp:hover:not(:disabled){box-shadow:4px 4px 0 #2A1810}
+.bp:active:not(:disabled){box-shadow:1px 1px 0 #2A1810;transform:translate(2px,2px)}
+.bp:disabled{opacity:.3;cursor:not-allowed;background:#aaa;box-shadow:1px 1px 0 #888}
+
+/* CATEGORY SELECTOR (首页) */
+.cat-grid{display:flex;flex-direction:column;gap:12px;margin-top:8px}
+.ccat{border:2px solid #2A1810;box-shadow:3px 3px 0 #2A1810;padding:16px 18px;cursor:pointer;background:#FDF5F0;transition:box-shadow .08s,transform .08s;display:flex;align-items:center;gap:14px}
+.ccat:hover{box-shadow:5px 5px 0 #2A1810;transform:translate(-1px,-1px)}
+.ccat:active{box-shadow:1px 1px 0 #2A1810;transform:translate(2px,2px)}
+.ccat-shirt{background:#FDF0E8}
+.ccat-icon{font-size:32px;flex-shrink:0}
+.ccat-body{}
+.ccat-name{font-size:15px;font-weight:900;color:#2A1810;font-family:monospace;letter-spacing:.04em;margin-bottom:3px}
+.ccat-shirt .ccat-name{color:#8B4A28}
+.ccat-desc{font-size:11px;color:#A88B7A;line-height:1.5}
+.ccat-tag{display:inline-block;font-size:10px;font-weight:700;padding:2px 7px;font-family:monospace;border:1.5px solid currentColor;margin-top:5px}
+.tag-elbow{color:#7B4F3A;background:#EDE0D4}
+.tag-shirt{color:#7B4F3A;background:#EDE0D4}
+
+/* STYLE SELECTOR (护肘服款式) */
+.style-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:8px}
+.sopt{border:2px solid #2A1810;box-shadow:3px 3px 0 #2A1810;padding:16px 10px 14px;cursor:pointer;text-align:center;background:#FDF5F0;transition:box-shadow .08s,transform .08s}
+.sopt:hover{box-shadow:5px 5px 0 #2A1810;transform:translate(-1px,-1px)}
+.sopt:active{box-shadow:1px 1px 0 #2A1810;transform:translate(2px,2px)}
+.sopt-ela{background:#EFF8F4}
+.sopt .sl{font-size:14px;font-weight:900;color:#2A1810;margin:8px 0 4px;font-family:monospace;letter-spacing:.04em}
+.sopt-ela .sl{color:#2A6B4A}
+.sopt .ss{font-size:10px;color:#8B6355;line-height:1.5;margin-bottom:10px}
+.sopt-tag{display:inline-block;font-size:10px;font-weight:700;padding:2px 8px;font-family:monospace;border:1.5px solid currentColor;letter-spacing:.03em}
+.sopt-tag-std{color:#7B4F3A;background:#EDE0D4}
+.sopt-tag-ela{color:#2E6B4F;background:#D4E8DD}
+
+/* COAT OPTIONS */
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:8px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.opt{border:2px solid #DDD0C8;padding:12px 8px;cursor:pointer;text-align:center;background:#FDF5F0;transition:all .08s;box-shadow:2px 2px 0 #C8B0A0}
+.opt:hover,.opt.pre{border-color:#C4714A;background:#fff;box-shadow:3px 3px 0 #8B4A28}
+.opt:active{box-shadow:1px 1px 0 #8B4A28;transform:translate(1px,1px)}
+.oi{font-size:20px;margin-bottom:5px;display:block}
+.ol{font-size:12px;font-weight:700;color:#2A1810;font-family:monospace}
+.os{font-size:10px;color:#A88B7A;margin-top:3px}
+
+/* CHEST STEP */
+.chest-opts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.copt{border:2px solid #DDD0C8;padding:14px 10px;cursor:pointer;text-align:center;background:#FDF5F0;transition:all .08s;box-shadow:2px 2px 0 #C8B0A0}
+.copt:hover{border-color:#C4714A;box-shadow:3px 3px 0 #8B4A28}
+.copt:active{box-shadow:1px 1px 0 #8B4A28;transform:translate(1px,1px)}
+.copt .ci{font-size:26px;margin-bottom:8px;display:block}
+.copt .cl{font-size:13px;font-weight:700;color:#2A1810;font-family:monospace}
+.copt .cs{font-size:11px;color:#A88B7A;margin-top:3px}
+
+/* NOTE BOXES */
+.anote{font-size:11px;color:#8B4A28;background:#FFF0E0;border:2px solid #C4714A;box-shadow:2px 2px 0 #8B4A28;padding:9px 12px;margin-bottom:14px;line-height:1.6;font-family:monospace}
+.anote-blue{font-size:11px;color:#1A5080;background:#E8F4FF;border:2px solid #4A90C4;box-shadow:2px 2px 0 #1A5080;padding:9px 12px;margin-bottom:14px;line-height:1.6;font-family:monospace}
+
+/* RESULT: SIZE HERO */
+.szh{background:#C4714A;border:2px solid #2A1810;box-shadow:4px 4px 0 #2A1810;padding:22px 20px;text-align:center;color:#fff;margin-bottom:14px}
+.szh .style-pill{display:inline-block;background:rgba(0,0,0,.2);font-size:10px;font-weight:700;padding:3px 10px;margin-bottom:10px;letter-spacing:.08em;font-family:monospace;border:1px solid rgba(255,255,255,.3)}
+.szh .l{font-size:12px;opacity:.85;margin-bottom:6px;font-family:monospace}
+.szh .s{font-size:64px;font-weight:900;line-height:1;letter-spacing:-.02em;font-family:monospace}
+.szh .r{font-size:12px;opacity:.75;margin-top:8px;font-family:monospace}
+
+/* SPEC BOXES */
+.sp3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
+.spb{background:#FDF5F0;border:2px solid #2A1810;box-shadow:2px 2px 0 #2A1810;padding:12px 8px;text-align:center}
+.spb .l{font-size:10px;color:#8B6355;margin-bottom:3px;font-weight:700;font-family:monospace;letter-spacing:.04em}
+.spb .v{font-size:20px;font-weight:900;color:#C4714A;line-height:1.1;font-family:monospace}
+.spb .u{font-size:10px;color:#C0A090;margin-top:2px}
+
+/* WARN BOXES */
+.wbox{background:#FFF8E0;border:2px solid #D4A020;box-shadow:2px 2px 0 #8A6400;padding:10px 13px;margin-bottom:14px;font-size:12px;color:#6A4A00;line-height:1.65;font-family:monospace}
+.wbox-red{background:#FFF0F0;border:2px solid #D04040;box-shadow:2px 2px 0 #A02020;padding:10px 13px;margin-bottom:14px;font-size:12px;color:#A02020;line-height:1.65;font-family:monospace}
+.ibox{background:#E8F4FF;border:2px solid #4A90C4;box-shadow:2px 2px 0 #1A5080;padding:10px 13px;margin-bottom:14px;font-size:12px;color:#1A5080;line-height:1.65;font-family:monospace}
+
+/* REASONING */
+.rsn{background:#FDF5F0;border:2px solid #DDD0C8;box-shadow:2px 2px 0 #C8B0A0;padding:14px 16px;margin-bottom:14px}
+.rsn .rl{font-size:10px;color:#8B6355;margin-bottom:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;font-family:monospace}
+.ri{font-size:12px;color:#5A3A2B;padding:3px 0;display:flex;gap:9px;line-height:1.45;font-family:monospace}
+.ri::before{content:">";color:#C4714A;font-size:14px;line-height:1.2;flex-shrink:0;font-weight:700}
+
+/* MESSAGE */
+.mlbl{font-size:10px;color:#8B6355;margin-bottom:8px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;font-family:monospace}
+.mbox{border:2px dashed #C8B0A0;padding:13px 15px;margin-bottom:12px;font-size:13px;color:#4A3020;line-height:1.85;background:#FDFAF7}
+.bcp{display:block;width:100%;padding:12px;border:2px solid #C4714A;background:transparent;color:#C4714A;font-size:13px;font-weight:700;cursor:pointer;font-family:monospace;margin-bottom:9px;box-shadow:2px 2px 0 #8B4A28;transition:all .08s;letter-spacing:.04em}
+.bcp:hover{background:#FDF0E0;box-shadow:3px 3px 0 #8B4A28}
+.bcp:active{box-shadow:1px 1px 0 #8B4A28;transform:translate(1px,1px)}
+.brs{display:block;width:100%;padding:11px;border:2px solid #DDD0C8;background:transparent;color:#8B6355;font-size:12px;cursor:pointer;font-family:monospace;box-shadow:2px 2px 0 #C8B0A0;letter-spacing:.04em;transition:all .08s}
+.brs:hover{background:#FDF5F0}
+
+/* REJECTION */
+.alc{text-align:center;padding:16px 4px}
+.aic{font-size:44px;margin-bottom:14px;display:block}
+.att{font-size:17px;font-weight:700;color:#C4714A;margin-bottom:10px;font-family:monospace}
+.atx{font-size:13px;color:#6B4A3A;line-height:1.75}
+.nobox{background:#FFF0F0;border:2px solid #D04040;box-shadow:3px 3px 0 #A02020;padding:20px;text-align:center;margin-bottom:14px}
+.nobox .t{font-size:15px;font-weight:700;color:#A02020;margin-bottom:6px;font-family:monospace}
+.nobox .s{font-size:13px;color:#A02020;line-height:1.65}
+
+/* SIZE TABLE */
+.ttog{display:block;width:100%;padding:11px;border:2px solid #2A1810;box-shadow:3px 3px 0 #2A1810;background:#FDF5F0;color:#2A1810;font-size:11px;cursor:pointer;margin-top:14px;font-family:monospace;transition:all .08s;letter-spacing:.04em}
+.ttog:hover{background:#fff;box-shadow:4px 4px 0 #2A1810}
+.ttog:active{box-shadow:1px 1px 0 #2A1810;transform:translate(2px,2px)}
+.twrap{display:none;margin-top:8px;background:#fff;border:2px solid #2A1810;box-shadow:4px 4px 0 #2A1810;padding:16px}
+.twrap-tabs{display:flex;gap:5px;margin-bottom:10px;flex-wrap:wrap}
+.ttab{flex:1;min-width:0;padding:7px 4px;border:2px solid #DDD0C8;background:#FDF5F0;font-size:10px;font-weight:700;cursor:pointer;font-family:monospace;color:#8B6355;transition:all .08s;text-align:center;box-shadow:2px 2px 0 #C8B0A0;white-space:nowrap}
+.ttab.on{border-color:#C4714A;color:#C4714A;background:#FFF0E0;box-shadow:2px 2px 0 #8B4A28}
+.tab-rec{font-family:monospace;font-size:11px;font-weight:700;padding:5px 12px;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.tab-rec.has-rec{background:#FFF0E0;border:2px solid #C4714A;box-shadow:2px 2px 0 #8B4A28;color:#8B4A28}
+.tab-rec.no-rec{background:#FDF5F0;border:2px dashed #DDD0C8;color:#A88B7A}
+.tab-rec .rec-sz{font-size:18px;color:#C4714A}
+.rtbl{width:100%;border-collapse:collapse;font-size:11px;font-family:monospace}
+.rtbl th{padding:8px 5px;background:#FDF5F0;color:#8B6355;font-weight:700;text-align:center;border-bottom:2px solid #2A1810;font-size:10px;letter-spacing:.06em}
+.rtbl td{padding:7px 5px;text-align:center;color:#2A1810;border-bottom:1px solid #EDE0D4}
+.rtbl td.sz{font-weight:900;color:#C4714A}
+.rtbl tr.hl{background:#FFF0E0}
+.rtbl tr.hl td.sz{color:#8B4A28}
+.tn{font-size:10px;color:#B8A090;line-height:1.65;margin-top:10px;font-family:monospace}
+
+/* FOOTER */
+.footer{text-align:center;margin-top:28px;font-size:11px;color:#C8B0A0;font-family:monospace;letter-spacing:.04em}
+.footer .brand{display:block;font-size:10px;color:#C4714A;margin-top:6px;letter-spacing:.12em;font-weight:700;border-top:1px dashed #E8D5C8;padding-top:6px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div class="title-box">🐾 尺码推荐</div>
+    <p>它小灶宠物服装 · 内部专用版</p>
+    <div class="brand-pill">它小灶和它的边牧</div>
+  </div>
+
+  <!-- 进度条（步数由品类动态控制） -->
+  <div class="steps" id="steps-bar"></div>
+
+  <div class="card-wrap">
+    <button type="button" class="btn-restart" id="btn-home">↩ 重新开始</button>
+    <div class="card" id="main-card">
+
+      <!-- ===== 首页：选品类 ===== -->
+      <div id="page-home">
+        <div class="stag">选择品类</div>
+        <div class="sq">这次要查哪款衣服的尺码？</div>
+        <div class="sh">选好后填入狗狗信息，结果页可切换其他品类对比推荐码</div>
+        <div class="cat-grid">
+
+          <div class="ccat" id="cat-elbow">
+            <div class="ccat-icon">🦴</div>
+            <div class="ccat-body">
+              <div class="ccat-name">2代半截护肘服</div>
+              <div class="ccat-desc">自研落肩袖版型 · 双重护垫结构<br>适合有护肘需求的大型犬</div>
+              <span class="ccat-tag tag-elbow">常规款 / 高弹款</span>
+            </div>
+          </div>
+
+          <div class="ccat ccat-shirt" id="cat-shirt">
+            <div class="ccat-icon">👕</div>
+            <div class="ccat-body">
+              <div class="ccat-name">衬衫系列</div>
+              <div class="ccat-desc">全款通用纸板 · 三种面料<br>适合日常穿搭的中大型犬</div>
+              <span class="ccat-tag tag-shirt">衬衫系列</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ===== 护肘服：选款式 ===== -->
+      <div id="page-elbow-style" style="display:none">
+        <div class="stag">2代半截护肘服</div>
+        <div class="sq">选择款式</div>
+        <div class="sh">两款面料弹性不同，选码逻辑略有差异；结果页可切换对比</div>
+        <div class="style-grid">
+          <div class="sopt" id="opt-std">
+            <svg viewBox="0 0 64 82" xmlns="http://www.w3.org/2000/svg" style="image-rendering:pixelated;width:62px;height:auto;display:block;margin:0 auto">
+              <rect x="18" y="0" width="28" height="3" fill="#8B4A28"/><rect x="15" y="3" width="4" height="12" fill="#8B4A28"/><rect x="45" y="3" width="4" height="12" fill="#8B4A28"/><rect x="18" y="15" width="28" height="3" fill="#8B4A28"/><rect x="19" y="3" width="9" height="12" fill="#C4714A"/><rect x="36" y="3" width="9" height="12" fill="#C4714A"/><rect x="28" y="3" width="8" height="12" fill="#FDE8C8"/><rect x="5" y="18" width="54" height="18" fill="#C4714A"/><rect x="5" y="18" width="54" height="4" fill="#D88060"/><rect x="5" y="33" width="54" height="3" fill="#A05038"/><rect x="5" y="18" width="3" height="18" fill="#A05038"/><rect x="56" y="18" width="3" height="18" fill="#A05038"/><rect x="5" y="36" width="18" height="34" fill="#C4714A"/><rect x="5" y="36" width="3" height="34" fill="#A05038"/><rect x="20" y="36" width="3" height="34" fill="#A05038"/><rect x="5" y="46" width="18" height="14" fill="#E0844A"/><rect x="7" y="48" width="13" height="2" fill="#F0A060"/><rect x="7" y="52" width="13" height="2" fill="#F0A060"/><rect x="7" y="56" width="13" height="2" fill="#F0A060"/><rect x="5" y="70" width="18" height="9" fill="#4A9E6A"/><rect x="5" y="70" width="18" height="3" fill="#3A8A5A"/><rect x="5" y="76" width="18" height="3" fill="#2A7848"/><rect x="41" y="36" width="18" height="34" fill="#C4714A"/><rect x="41" y="36" width="3" height="34" fill="#A05038"/><rect x="56" y="36" width="3" height="34" fill="#A05038"/><rect x="41" y="46" width="18" height="14" fill="#E0844A"/><rect x="43" y="48" width="13" height="2" fill="#F0A060"/><rect x="43" y="52" width="13" height="2" fill="#F0A060"/><rect x="43" y="56" width="13" height="2" fill="#F0A060"/><rect x="41" y="70" width="18" height="9" fill="#4A9E6A"/><rect x="41" y="70" width="18" height="3" fill="#3A8A5A"/><rect x="41" y="76" width="18" height="3" fill="#2A7848"/><rect x="5" y="36" width="54" height="2" fill="#8B4A28"/>
+            </svg>
+            <div class="sl">常规款</div><div class="ss">微弹面料<br>适度宽松穿着</div>
+            <span class="sopt-tag sopt-tag-std">半截护肘服</span>
+          </div>
+          <div class="sopt sopt-ela" id="opt-ela">
+            <svg viewBox="0 0 64 82" xmlns="http://www.w3.org/2000/svg" style="image-rendering:pixelated;width:62px;height:auto;display:block;margin:0 auto">
+              <rect x="18" y="0" width="28" height="3" fill="#2A6A50"/><rect x="15" y="3" width="4" height="12" fill="#2A6A50"/><rect x="45" y="3" width="4" height="12" fill="#2A6A50"/><rect x="18" y="15" width="28" height="3" fill="#2A6A50"/><rect x="19" y="3" width="9" height="12" fill="#3A9E6A"/><rect x="36" y="3" width="9" height="12" fill="#3A9E6A"/><rect x="28" y="3" width="8" height="12" fill="#EFF8F4"/><rect x="5" y="18" width="54" height="18" fill="#3A9E6A"/><rect x="5" y="18" width="54" height="4" fill="#5AB888"/><rect x="5" y="33" width="54" height="3" fill="#2A7050"/><rect x="5" y="18" width="3" height="18" fill="#2A7050"/><rect x="56" y="18" width="3" height="18" fill="#2A7050"/><rect x="5" y="36" width="18" height="34" fill="#3A9E6A"/><rect x="5" y="36" width="3" height="34" fill="#2A7050"/><rect x="20" y="36" width="3" height="34" fill="#2A7050"/><rect x="5" y="46" width="18" height="14" fill="#5AB888"/><rect x="7" y="48" width="13" height="2" fill="#80D8A8"/><rect x="7" y="52" width="13" height="2" fill="#80D8A8"/><rect x="7" y="56" width="13" height="2" fill="#80D8A8"/><rect x="5" y="70" width="18" height="9" fill="#4A90C4"/><rect x="5" y="70" width="18" height="3" fill="#2A70A0"/><rect x="5" y="76" width="18" height="3" fill="#1A5080"/><rect x="41" y="36" width="18" height="34" fill="#3A9E6A"/><rect x="41" y="36" width="3" height="34" fill="#2A7050"/><rect x="56" y="36" width="3" height="34" fill="#2A7050"/><rect x="41" y="46" width="18" height="14" fill="#5AB888"/><rect x="43" y="48" width="13" height="2" fill="#80D8A8"/><rect x="43" y="52" width="13" height="2" fill="#80D8A8"/><rect x="43" y="56" width="13" height="2" fill="#80D8A8"/><rect x="41" y="70" width="18" height="9" fill="#4A90C4"/><rect x="41" y="70" width="18" height="3" fill="#2A70A0"/><rect x="41" y="76" width="18" height="3" fill="#1A5080"/><rect x="5" y="36" width="54" height="2" fill="#2A6A50"/>
+            </svg>
+            <div class="sl">高弹款</div><div class="ss">高弹面料<br>需刚好合身</div>
+            <span class="sopt-tag sopt-tag-ela">高弹半截护肘服</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== 通用：品种+体重（+性别，衬衫专用） ===== -->
+      <div id="page-info" style="display:none">
+        <div class="stag" id="info-tag">基本信息</div>
+        <div class="sq">请问您家狗狗是什么品种呀～</div>
+        <div class="sh" id="info-hint">填写后系统辅助判断体型与毛量</div>
+        <label class="fl">犬种</label>
+        <input type="text" id="breed" placeholder="例：金毛、边牧、萨摩耶…">
+        <label class="fl">体重（斤）</label>
+        <input type="number" id="weight" placeholder="最近称过的数字哦～" min="1" max="200" step="0.5">
+        <!-- 性别，仅衬衫显示 -->
+        <div class="grow" id="gender-row" style="display:none">
+          <span class="glbl">性别（可选）</span>
+          <div class="gbtns">
+            <button type="button" class="gbtn" id="gm">男宝</button>
+            <button type="button" class="gbtn" id="gf">女宝</button>
+            <button type="button" class="gbtn on" id="gn">不确定</button>
+          </div>
+        </div>
+        <button type="button" class="bp" id="btn-info" disabled>下一步 →</button>
+      </div>
+
+      <!-- ===== 通用：毛量 ===== -->
+      <div id="page-coat" style="display:none">
+        <div class="stag">毛发确认</div>
+        <div class="sq" id="coat-q">毛发是哪种类型？</div>
+        <div id="coat-note" style="display:none" class="anote"></div>
+        <div class="sh">点击选项即进入下一步</div>
+        <div class="g3">
+          <div class="opt" id="c-short"><span class="oi">✂️</span><div class="ol">短毛</div><div class="os">拉布、杜宾</div></div>
+          <div class="opt" id="c-curly"><span class="oi">🐑</span><div class="ol">卷毛</div><div class="os">贵宾、比熊</div></div>
+          <div class="opt" id="c-normal"><span class="oi">🐕</span><div class="ol">正常</div><div class="os">普通中长毛</div></div>
+        </div>
+        <div class="g2" style="margin-top:0">
+          <div class="opt" id="c-thick"><span class="oi">🌿</span><div class="ol">底毛较厚</div><div class="os">双层毛品种</div></div>
+          <div class="opt" id="c-super"><span class="oi">☁️</span><div class="ol">非常蓬松</div><div class="os">棉花糖级别</div></div>
+        </div>
+      </div>
+
+      <!-- ===== 通用：胸围 ===== -->
+      <div id="page-chest" style="display:none">
+        <div class="stag">胸围数据</div>
+        <div class="sq" id="chest-q">有量过胸围吗？</div>
+        <div class="sh" id="chest-h">有数据推荐更准，没有按体重也可以</div>
+        <div id="chest-note-ela" style="display:none" class="anote-blue">💡 高弹款弹力大，护垫有重量，按胸围选码更准，建议量一下</div>
+        <div id="chest-opts" class="chest-opts">
+          <div class="copt" id="opt-yes"><span class="ci">📏</span><div class="cl">有，来输入</div><div class="cs">更精准</div></div>
+          <div class="copt" id="opt-no"><span class="ci">👌</span><div class="cl">没有，按体重</div><div class="cs">快速推荐</div></div>
+        </div>
+        <div id="chest-input" style="display:none;margin-top:16px">
+          <label class="fl">胸围（cm）</label>
+          <input type="number" id="chest" placeholder="软尺绕胸部最宽处量一圈" min="30" max="150" step="0.5">
+          <div class="sh" style="margin-top:10px;margin-bottom:0">贴紧毛发量的请多预留 1~2cm</div>
+          <button type="button" class="bp" id="btn-chest" disabled>计算推荐尺码 →</button>
+        </div>
+      </div>
+
+      <!-- ===== 结果 ===== -->
+      <div id="page-result"></div>
+
+    </div><!-- .card -->
+  </div><!-- .card-wrap -->
+
+  <!-- 尺码表（所有品类共用） -->
+  <button type="button" class="ttog" id="ttog" style="display:none">▼ 查看完整尺码表（可切换品类对比）</button>
+  <div class="twrap" id="twrap">
+    <div class="twrap-tabs">
+      <button class="ttab" id="tab-std" type="button">护肘-常规</button>
+      <button class="ttab" id="tab-ela" type="button">护肘-高弹</button>
+      <button class="ttab" id="tab-shirt" type="button">衬衫</button>
+    </div>
+    <div class="tab-rec no-rec" id="tab-rec-box"><span>切换品类查看推荐码</span></div>
+    <table class="rtbl"><thead><tr id="tbl-head"></tr></thead><tbody id="tb"></tbody></table>
+    <div class="tn" id="tblnote"></div>
+  </div>
+
+  <div class="footer">
+    尺码推荐引擎 v1.0 · 内部使用
+    <span class="brand">它小灶和它的边牧</span>
+  </div>
+</div><!-- .wrap -->
+
+<script>
+// ===== 尺码数据 =====
+const SZ_STD=[
+  {sz:'3XL',c:58, b:36,wn:15,wx:20, nMin:30,nMax:36},
+  {sz:'4XL',c:65, b:43,wn:20,wx:28, nMin:36,nMax:40},
+  {sz:'5XL',c:72, b:50,wn:28,wx:40, nMin:40,nMax:50},
+  {sz:'6XL',c:80, b:55,wn:40,wx:55, nMin:46,nMax:56},
+  {sz:'7XL',c:88, b:60,wn:55,wx:75, nMin:50,nMax:60},
+  {sz:'8XL',c:95, b:65,wn:75,wx:90, nMin:55,nMax:65},
+  {sz:'9XL',c:108,b:70,wn:90,wx:100,nMin:60,nMax:68},
+];
+const SZ_ELA=[
+  {sz:'3XL',c:58, b:18,wn:17,wx:23, nMin:30,nMax:36},
+  {sz:'4XL',c:65, b:22,wn:24,wx:34, nMin:35,nMax:40},
+  {sz:'5XL',c:72, b:23,wn:35,wx:45, nMin:40,nMax:50},
+  {sz:'6XL',c:80, b:24,wn:46,wx:60, nMin:46,nMax:56},
+  {sz:'7XL',c:88, b:25,wn:60,wx:80, nMin:50,nMax:60},
+  {sz:'8XL',c:95, b:26,wn:80,wx:95, nMin:55,nMax:65},
+  {sz:'9XL',c:108,b:27,wn:95,wx:110,nMin:60,nMax:68},
+];
+const SZ_SHIRT=[
+  {sz:'XL', w:33,c:46, b:32,wn:8,  wx:12},
+  {sz:'2XL',w:36,c:51, b:36,wn:10, wx:15},
+  {sz:'3XL',w:39,c:56, b:41,wn:15, wx:18},
+  {sz:'4XL',w:43,c:64, b:45,wn:18, wx:25},
+  {sz:'5XL',w:47,c:72, b:50,wn:25, wx:34},
+  {sz:'6XL',w:51,c:80, b:54,wn:34, wx:45},
+  {sz:'7XL',w:56,c:88, b:58,wn:45, wx:55},
+  {sz:'8XL',w:61,c:96, b:63,wn:55, wx:75},
+  {sz:'9XL',w:66,c:104,b:67,wn:75, wx:90},
+];
+
+// ===== 品种库 =====
+const BR={
+  unsuitable: ['法斗','法国斗牛','法牛','柯基','腊肠','长毛腊肠','迷你腊肠','迷你达克斯'],
+  shortBack:  ['柯基','腊肠','长毛腊肠','迷你腊肠'], // 衬衫专用：推无袖款
+  superFluffy:['萨摩耶','萨摩','阿拉斯加'],
+  doubleCoat: ['边牧','金毛','金毛寻回','哈士奇','哈斯奇','德牧','德国牧羊','白德牧','瑞牧','喜乐蒂','柯利','牧羊犬','秋田','松狮','伯恩山','大白熊','比利牛斯'],
+  shortCoat:  ['拉布拉多','拉布','史宾格','杜宾','多伯曼','多巴曼','道伯曼','威玛','魏玛','维玛','灵缇','惠比特','大丹','萨路基','维兹拉'],
+  curly:      ['贵宾','泰迪','巨贵','比熊','卷毛','标准贵宾','皇家贵宾','大型贵宾'],
+  wideChest:  ['柴犬','柴'],
+  longLegs:   ['巨贵','标准贵宾','大型贵宾','皇家贵宾'],
+  longBody:   ['边牧','金毛','金毛寻回','德牧','德国牧羊','白德牧','瑞牧','哈士奇','哈斯奇','喜乐蒂','柯利','伯恩山','灵缇','惠比特','萨路基'],
+};
+const CHINT={
+  superFluffy:'已根据品种识别为蓬松毛发，可直接点击"非常蓬松"确认，也可选择其他类型覆盖',
+  shortCoat:  '已根据品种识别为短毛犬，可直接点击"短毛"确认，也可选择其他类型覆盖',
+  curly:      '已根据品种识别为卷毛犬，可直接点击"卷毛"确认，也可选择其他类型覆盖',
+  doubleCoat: '该品种通常为双层毛，可参考选择，也可根据实际毛量调整',
+  wideChest:  '柴犬体型圆润、胸围比例偏大，已为您优先考虑胸围因素',
+};
+const CDEF={superFluffy:'c-super',shortCoat:'c-short',curly:'c-curly',doubleCoat:'c-normal',wideChest:'c-normal'};
+
+// ===== 全局状态 =====
+// category: 'elbow' | 'shirt'
+// elbowStyle: 'std' | 'ela'
+let ST={
+  category:'', elbowStyle:'',
+  breed:'', weight:0, breedCat:'', coat:null, chest:null,
+  gender:'', longLegs:false, longBody:false,
+};
+let currentPage='home'; // 当前页面名
+let activeTab=''; // 当前尺码表Tab
+
+// ===== 工具函数 =====
+function detB(s){
+  const chk=list=>list.some(x=>s.includes(x));
+  // 护肘服：法斗+柯基+腊肠全拒
+  // 衬衫：法斗拒，柯基/腊肠推无袖
+  if(chk(BR.unsuitable)) return 'unsuitable';
+  if(chk(BR.superFluffy)) return 'superFluffy';
+  if(chk(BR.wideChest))   return 'wideChest';
+  if(chk(BR.shortCoat))   return 'shortCoat';
+  if(chk(BR.curly))       return 'curly';
+  if(chk(BR.doubleCoat))  return 'doubleCoat';
+  return 'unknown';
+}
+function detShirtB(s){
+  const chk=list=>list.some(x=>s.includes(x));
+  if(['法斗','法国斗牛','法牛'].some(x=>s.includes(x))) return 'unsuitable';
+  if(chk(BR.shortBack))   return 'shortBack';
+  if(chk(BR.superFluffy)) return 'superFluffy';
+  if(chk(BR.shortCoat))   return 'shortCoat';
+  if(chk(BR.curly))       return 'curly';
+  if(chk(BR.doubleCoat))  return 'doubleCoat';
+  return 'unknown';
+}
+function isLongLegs(s){return BR.longLegs.some(x=>s.includes(x));}
+function isLongBody(s){return BR.longBody.some(x=>s.includes(x));}
+
+function wIdx(w,SZ){for(let i=0;i<SZ.length;i++)if(w>=SZ[i].wn&&w<=SZ[i].wx)return i;return w<SZ[0].wn?0:SZ.length-1;}
+function cIdx(c,surplus,SZ){const t=c+surplus;for(let i=0;i<SZ.length;i++)if(SZ[i].c>=t)return i;return SZ.length-1;}
+function pct(w,i,SZ){const s=SZ[i],r=s.wx-s.wn;return r?(w-s.wn)/r:0;}
+function cap(i,SZ){return Math.min(i,SZ.length-1);}
+
+// ===== 计算：护肘服 =====
+function computeElbow(weight,coat,chest,style,breedCat,longBody){
+  const SZ=style==='std'?SZ_STD:SZ_ELA;
+  const isEla=style==='ela';
+  const surplus=isEla?3:6;
+  weight=parseFloat(weight);
+  const c=chest?parseFloat(chest):null;
+  const maxW=isEla?110:100;
+  if(weight>maxW) return{type:'noSize',reason:'体重超出 9XL 上限（'+maxW+' 斤），暂无合适尺码。'};
+  let idx,notes=[];
+  if(c){
+    idx=cIdx(c,surplus,SZ);notes.push('胸围 '+c+'cm + '+surplus+'cm 余量 → '+SZ[idx].sz);
+    if(coat==='superFluffy'){idx=cap(idx+1,SZ);notes.push('蓬松毛发，升 1 码 → '+SZ[idx].sz);}
+    else if(coat==='thick'&&breedCat==='superFluffy'){idx=cap(idx+1,SZ);notes.push('蓬松品种 + 底毛较厚，升 1 码 → '+SZ[idx].sz);}
+  } else {
+    idx=wIdx(weight,SZ);notes.push('体重 '+weight+' 斤 → 体重表对应 '+SZ[idx].sz);
+    if(breedCat==='wideChest'&&weight>=20&&idx<1){idx=1;notes.push('柴犬胸围比例偏大，20 斤以上选 4XL → '+SZ[1].sz);}
+    if(coat==='superFluffy'){idx=cap(idx+1,SZ);notes.push('蓬松毛发，升 1 码 → '+SZ[idx].sz);}
+    else if(coat==='thick'){
+      if(breedCat==='superFluffy'){idx=cap(idx+1,SZ);notes.push('蓬松品种 + 底毛较厚，升 1 码 → '+SZ[idx].sz);}
+      else if(pct(weight,idx,SZ)>0.6){idx=cap(idx+1,SZ);notes.push('底毛较厚且体重偏上，升 1 码 → '+SZ[idx].sz);}
+      else notes.push('底毛较厚，体重偏下，按体重表选码');
+    }
+    if(!isEla&&longBody&&(coat==='normal'||coat==='short'||coat==='curly')){
+      idx=cap(idx+1,SZ);notes.push('修长体型品种，常规款偏大穿着 → '+SZ[idx].sz);
+    }
+    if(isEla) notes.push('高弹款建议量胸围更准确，如有误差可联系客服');
+  }
+  return{type:'result',idx,notes};
+}
+
+// ===== 计算：衬衫 =====
+function computeShirt(weight,coat,chest,breedCat){
+  weight=parseFloat(weight);
+  const c=chest?parseFloat(chest):null;
+  if(weight>90) return{type:'noSize',reason:'体重超出 9XL 上限（90 斤），暂无合适尺码，建议联系客服确认。'};
+  let idx,notes=[];
+  if(c){
+    idx=cIdx(c,7,SZ_SHIRT);notes.push('胸围 '+c+'cm + 7cm 余量 → '+SZ_SHIRT[idx].sz);
+    if(coat==='superFluffy'){idx=cap(idx+1,SZ_SHIRT);notes.push('蓬松毛发，升 1 码 → '+SZ_SHIRT[idx].sz);}
+    else if(coat==='thick'){
+      const prev=idx>0?SZ_SHIRT[idx-1].c:SZ_SHIRT[idx].c-8;
+      const p=(c+7-prev)/(SZ_SHIRT[idx].c-prev);
+      if(p>0.6){idx=cap(idx+1,SZ_SHIRT);notes.push('底毛较厚偏上，升 1 码 → '+SZ_SHIRT[idx].sz);}
+      else notes.push('底毛较厚，已偏大选码');
+    } else if(coat==='short'||coat==='curly'){
+      const prev=idx>0?SZ_SHIRT[idx-1].c:SZ_SHIRT[idx].c-8;
+      const p=(c+7-prev)/(SZ_SHIRT[idx].c-prev);
+      if(p<0.4&&idx>0){idx=Math.max(idx-1,0);notes.push((coat==='short'?'短毛':'卷毛')+'犬胸围偏下，选小一码 → '+SZ_SHIRT[idx].sz);}
+    }
+  } else {
+    idx=wIdx(weight,SZ_SHIRT);notes.push('体重 '+weight+' 斤 → 体重表对应 '+SZ_SHIRT[idx].sz);
+    if(coat==='superFluffy'){idx=cap(idx+1,SZ_SHIRT);notes.push('蓬松毛发，升 1 码 → '+SZ_SHIRT[idx].sz);}
+    else if(coat==='thick'){
+      if(pct(weight,idx,SZ_SHIRT)>0.5){idx=cap(idx+1,SZ_SHIRT);notes.push('底毛较厚且体重偏上，升 1 码 → '+SZ_SHIRT[idx].sz);}
+      else notes.push('底毛较厚，体重偏下，按体重表选码');
+    } else if(coat==='short'||coat==='curly'){
+      if(pct(weight,idx,SZ_SHIRT)<0.4&&idx>0){idx=Math.max(idx-1,0);notes.push((coat==='short'?'短毛':'卷毛')+'犬体重偏下，选小一码 → '+SZ_SHIRT[idx].sz);}
+    }
+  }
+  return{type:'result',idx,notes};
+}
+
+// ===== 话术：护肘服 =====
+function genMsgElbow(idx,coat,style,longLegs,breedCat){
+  const SZ=style==='std'?SZ_STD:SZ_ELA;
+  const s=SZ[idx],isEla=style==='ela';
+  const isSuperBreed=coat==='superFluffy'||(coat==='thick'&&breedCat==='superFluffy');
+  if(isSuperBreed){const alt=SZ[Math.max(idx-1,0)];const desc=coat==='superFluffy'?'非常蓬松厚实':'底毛较厚';return'根据您家狗狗的情况，如果毛毛'+desc+'，建议选 '+s.sz+'～如果毛量偏正常，'+alt.sz+' 就够啦～';}
+  if(longLegs&&idx<SZ.length-1)return'根据您家狗狗的数据，推荐 '+s.sz+'，可以护到肘部没问题哦～如果希望袖子长一些，可以考虑 '+SZ[idx+1].sz+'～';
+  if(isEla)return'根据您家狗狗的数据，建议选 '+s.sz+'～高弹款请注意不要选大哦，刚好合身护垫才不容易移位～';
+  return'根据您家狗狗的数据，建议选 '+s.sz+'，祝穿着愉快～';
+}
+
+// ===== 话术：衬衫 =====
+function genMsgShirt(idx,coat,breedCat){
+  const s=SZ_SHIRT[idx];
+  if(coat==='superFluffy'){const a=Math.max(idx-1,0);return'根据您家狗狗的情况，如果毛毛非常蓬松厚实，建议选 '+s.sz+'～如果毛量属于正常厚度，'+SZ_SHIRT[a].sz+' 就合适啦～';}
+  if(coat==='normal'&&(breedCat==='doubleCoat'||breedCat==='unknown')){const a=cap(idx+1,SZ_SHIRT);return'建议选 '+s.sz+'～如果您家毛毛底毛比较厚实蓬松，可以考虑 '+SZ_SHIRT[a].sz+' 更保险哦～';}
+  return'根据您家狗狗的数据，建议选 '+s.sz+'，祝穿着愉快～';
+}
+
+// ===== 进度条 =====
+function renderSteps(total,current){
+  const bar=document.getElementById('steps-bar');
+  bar.innerHTML='';
+  for(let i=1;i<=total;i++){
+    const d=document.createElement('div');
+    d.className='sq-step'+(i===current?' active':i<current?' done':'');
+    bar.appendChild(d);
+    if(i<total){const l=document.createElement('div');l.className='sq-line';bar.appendChild(l);}
+  }
+}
+
+// ===== 页面切换 =====
+const PAGES=['page-home','page-elbow-style','page-info','page-coat','page-chest','page-result'];
+function showPage(name){
+  PAGES.forEach(p=>document.getElementById(p).style.display=p===name?'block':'none');
+  currentPage=name;
+  // 返回按钮
+  document.getElementById('btn-home').style.display=name==='page-home'?'none':'block';
+}
+
+// ===== 建表 =====
+function buildTable(tabKey, hlIdx){
+  const tabIds=['tab-std','tab-ela','tab-shirt'];
+  tabIds.forEach(id=>{
+    document.getElementById(id).className='ttab'+(id==='tab-'+tabKey||id===('tab-'+tabKey)?'':'')+
+      (('tab-'+tabKey)===id?' on':'');
+  });
+  // 更精确的tab active设置
+  document.getElementById('tab-std').className='ttab'+(tabKey==='std'?' on':'');
+  document.getElementById('tab-ela').className='ttab'+(tabKey==='ela'?' on':'');
+  document.getElementById('tab-shirt').className='ttab'+(tabKey==='shirt'?' on':'');
+
+  let SZ,heads,noteHtml;
+  if(tabKey==='shirt'){
+    SZ=SZ_SHIRT;
+    heads='<th>尺码</th><th>腰围</th><th>胸围</th><th>背长</th><th>体重(斤)</th>';
+    noteHtml='* 体重仅供参考，以胸围为主要选码依据<br>* 无弹面料建议预留 6~8cm 余量，版型胸阔偏窄<br>* 80 斤以上蓬松毛发犬种超出可穿范围';
+    document.getElementById('tbl-head').innerHTML=heads;
+    const tbody=document.getElementById('tb');tbody.innerHTML='';
+    SZ.forEach((s,i)=>{const tr=document.createElement('tr');if(i===hlIdx)tr.className='hl';tr.innerHTML='<td class="sz">'+s.sz+'</td><td>'+s.w+'</td><td>'+s.c+'</td><td>'+s.b+'</td><td>'+s.wn+'–'+s.wx+'</td>';tbody.appendChild(tr);});
+    document.getElementById('tblnote').innerHTML=noteHtml;
+  } else {
+    SZ=tabKey==='std'?SZ_STD:SZ_ELA;
+    const isEla=tabKey==='ela';
+    heads='<th>尺码</th><th>脖围</th><th>胸围</th><th>'+(isEla?'衣长':'背长')+'</th><th>体重(斤)</th>';
+    noteHtml='* 以胸围为主要选码依据，体重仅供参考<br>'+(isEla?'* 高弹款护垫有重量，刚好合身才准确护肘，切勿选大<br>':'* 常规款微弹面料，适度宽松穿着即可，不能贪大<br>')+'* 护肘服袖子比普通衣服略长，不适合短腿犬种';
+    document.getElementById('tbl-head').innerHTML=heads;
+    const tbody=document.getElementById('tb');tbody.innerHTML='';
+    SZ.forEach((s,i)=>{const tr=document.createElement('tr');if(i===hlIdx)tr.className='hl';tr.innerHTML='<td class="sz">'+s.sz+'</td><td>'+s.nMin+'–'+s.nMax+'</td><td>'+s.c+'</td><td>'+s.b+'</td><td>'+s.wn+'–'+s.wx+'</td>';tbody.appendChild(tr);});
+    document.getElementById('tblnote').innerHTML=noteHtml;
+  }
+
+  // 推荐码提示条
+  const recBox=document.getElementById('tab-rec-box');
+  const labelMap={std:'护肘-常规',ela:'护肘-高弹',shirt:'衬衫'};
+  if(hlIdx>=0&&hlIdx<SZ.length){
+    recBox.className='tab-rec has-rec';
+    recBox.innerHTML='<span>'+labelMap[tabKey]+'推荐：</span><span class="rec-sz">'+SZ[hlIdx].sz+'</span><span style="color:#8B6355;font-size:10px">（高亮行）</span>';
+  } else {
+    recBox.className='tab-rec no-rec';
+    recBox.innerHTML='<span style="font-size:10px">— 请先完成上方查询再切换对比 —</span>';
+  }
+  activeTab=tabKey;
+}
+
+// ===== Tab切换时自动重算 =====
+function switchTab(tabKey){
+  if(!ST.coat||!ST.weight){buildTable(tabKey,-1);return;}
+  let hlIdx=-1;
+  if(tabKey==='shirt'){
+    const res=computeShirt(ST.weight,ST.coat,ST.chest,ST.breedCat);
+    if(res.type==='result')hlIdx=res.idx;
+  } else {
+    const res=computeElbow(ST.weight,ST.coat,ST.chest,tabKey,ST.breedCat,ST.longBody);
+    if(res.type==='result')hlIdx=res.idx;
+  }
+  buildTable(tabKey,hlIdx);
+}
+
+// ===== 结果显示 =====
+function showResult(res,category,style){
+  showPage('page-result');
+  document.getElementById('ttog').style.display='block';
+  const el=document.getElementById('page-result');
+
+  // 护肘服：法斗/柯基/腊肠
+  if(res.type==='unsuitable'){
+    el.innerHTML='<div class="alc"><span class="aic">🌹</span><div class="att">这款不适合</div><div class="atx">法斗体型特殊，且护肘服袖子相对较长——柯基、腊肠等短腿犬种同样不适合。感谢关注～</div><button type="button" class="brs" style="margin-top:20px;display:block;width:100%" id="rr">重新查询</button></div>';
+    renderSteps(5,5);
+  }
+  // 衬衫：推无袖款
+  else if(res.type==='shortBack'){
+    el.innerHTML='<div class="alc"><span class="aic">💡</span><div class="att">建议选无袖款</div><div class="atx">柯基、腊肠这类小朋友四肢偏短，穿有袖款袖子偏长影响活动。<br><br>推荐<strong>无袖款</strong>：背心、胸背裙、南瓜裙、大摆裙，会合适很多哦～</div><button type="button" class="brs" style="margin-top:20px;display:block;width:100%" id="rr">重新查询</button></div>';
+    renderSteps(4,4);
+  }
+  else if(res.type==='noSize'){
+    el.innerHTML='<div class="nobox"><div class="t">暂无合适尺码</div><div class="s">'+res.reason+'</div></div><div class="atx" style="font-size:13px;line-height:1.7;margin-bottom:16px">建议联系客服进一步确认。</div><button type="button" class="brs" id="rr">重新查询</button>';
+    renderSteps(category==='shirt'?4:5, category==='shirt'?4:5);
+  }
+  else {
+    // 正常结果
+    const isElbow=category==='elbow';
+    const isEla=style==='ela';
+    const SZ=isElbow?(isEla?SZ_ELA:SZ_STD):SZ_SHIRT;
+    const s=SZ[res.idx];
+    const totalSteps=isElbow?5:4;
+    renderSteps(totalSteps,totalSteps);
+
+    let msg='',extraHtml='',specHtml='';
+    if(isElbow){
+      msg=genMsgElbow(res.idx,ST.coat,style,ST.longLegs,ST.breedCat);
+      const longLegsHtml=ST.longLegs&&res.idx<SZ.length-1?'<div class="ibox">📏 长腿犬提示：'+s.sz+' 可护到肘部～如果想袖子更长，可考虑 '+SZ[res.idx+1].sz+'。</div>':'';
+      const elaWarn=isEla?'<div class="wbox-red">⚠️ 高弹款护垫有垂感，请不要选大码，刚好合身才能准确护住肘关节。</div>':'';
+      extraHtml=longLegsHtml+elaWarn;
+      specHtml='<div class="sp3"><div class="spb"><div class="l">胸围</div><div class="v">'+s.c+'</div><div class="u">cm</div></div><div class="spb"><div class="l">'+(isEla?'衣长':'背长')+'</div><div class="v">'+s.b+'</div><div class="u">cm</div></div><div class="spb"><div class="l">脖围</div><div class="v">'+s.nMin+'–'+s.nMax+'</div><div class="u">cm</div></div></div>';
+    } else {
+      msg=genMsgShirt(res.idx,ST.coat,ST.breedCat);
+      const maleWarn=ST.gender==='male'&&res.idx>=5?'<div class="wbox">⚠️ 男宝试穿时请留意腹部位置，确认衣摆没有挡住或贴住下方哦～</div>':'';
+      const bigWarn=ST.weight>=80&&ST.coat!=='short'&&ST.coat!=='curly'?'<div class="wbox">⚠️ 体重偏大，建议试穿后确认胸围是否合适</div>':'';
+      extraHtml=maleWarn+bigWarn;
+      specHtml='<div class="sp3"><div class="spb"><div class="l">胸围</div><div class="v">'+s.c+'</div><div class="u">cm</div></div><div class="spb"><div class="l">背长</div><div class="v">'+s.b+'</div><div class="u">cm</div></div><div class="spb"><div class="l">腰围</div><div class="v">'+s.w+'</div><div class="u">cm</div></div></div>';
+    }
+
+    const pillLabel=isElbow?(isEla?'护肘-高弹':'护肘-常规'):'衬衫';
+    el.innerHTML=[
+      '<div class="szh"><div class="style-pill">'+pillLabel+'</div><div class="l">推荐尺码</div><div class="s">'+s.sz+'</div><div class="r">体重参考 '+s.wn+'–'+s.wx+' 斤</div></div>',
+      specHtml,extraHtml,
+      '<div class="rsn"><div class="rl">推荐依据</div>',res.notes.map(n=>'<div class="ri">'+n+'</div>').join(''),'</div>',
+      '<div class="mlbl">客服话术参考</div><div class="mbox" id="msgA">'+msg+'</div>',
+      '<button type="button" class="bcp" id="cpBtn">复制话术</button>',
+      '<button type="button" class="brs" id="rr">重新推荐</button>',
+    ].join('');
+
+    document.getElementById('cpBtn').addEventListener('click',function(){
+      const txt=document.getElementById('msgA').textContent;
+      if(navigator.clipboard){navigator.clipboard.writeText(txt).then(()=>{this.textContent='✓ 已复制';setTimeout(()=>this.textContent='复制话术',2000);});}
+      else{const r=document.createRange();r.selectNode(document.getElementById('msgA'));window.getSelection().removeAllRanges();window.getSelection().addRange(r);document.execCommand('copy');this.textContent='✓ 已复制';setTimeout(()=>this.textContent='复制话术',2000);}
+    });
+
+    // 初始化尺码表：当前品类对应Tab
+    const initTab=isElbow?(isEla?'ela':'std'):'shirt';
+    buildTable(initTab,res.idx);
+  }
+  document.getElementById('rr').addEventListener('click',resetAll);
+}
+
+// ===== 重置 =====
+function resetAll(){
+  ST={category:'',elbowStyle:'',breed:'',weight:0,breedCat:'',coat:null,chest:null,gender:'',longLegs:false,longBody:false};
+  activeTab='';
+  document.getElementById('breed').value='';
+  document.getElementById('weight').value='';
+  const ch=document.getElementById('chest');if(ch)ch.value='';
+  document.getElementById('btn-info').disabled=true;
+  document.getElementById('chest-opts').style.display='grid';
+  document.getElementById('chest-input').style.display='none';
+  document.getElementById('ttog').style.display='none';
+  document.getElementById('twrap').style.display='none';
+  document.getElementById('ttog').textContent='▼ 查看完整尺码表（可切换品类对比）';
+  document.querySelectorAll('#page-coat .opt').forEach(o=>o.classList.remove('pre'));
+  document.getElementById('coat-note').style.display='none';
+  document.getElementById('chest-note-ela').style.display='none';
+  document.getElementById('gender-row').style.display='none';
+  setGender('');
+  renderSteps(2,1);
+  showPage('page-home');
+}
+
+// ===== 性别按钮 =====
+function setGender(v){
+  ST.gender=v;
+  document.getElementById('gm').className='gbtn'+(v==='male'?' on':'');
+  document.getElementById('gf').className='gbtn'+(v==='female'?' on':'');
+  document.getElementById('gn').className='gbtn'+(v===''?' on':'');
+}
+
+// ===== 事件绑定 =====
+
+document.getElementById('btn-home').addEventListener('click',resetAll);
+
+// 首页：选品类
+document.getElementById('cat-elbow').addEventListener('click',function(){
+  ST.category='elbow';
+  renderSteps(5,1);
+  showPage('page-elbow-style');
+});
+document.getElementById('cat-shirt').addEventListener('click',function(){
+  ST.category='shirt';
+  document.getElementById('info-tag').textContent='衬衫系列 · 基本信息';
+  document.getElementById('info-hint').textContent='填写后系统辅助判断毛量';
+  document.getElementById('gender-row').style.display='flex';
+  renderSteps(4,1);
+  showPage('page-info');
+});
+
+// 护肘服：选款式
+document.getElementById('opt-std').addEventListener('click',function(){
+  ST.elbowStyle='std';
+  document.getElementById('info-tag').textContent='2代半截护肘服（常规款）· 基本信息';
+  document.getElementById('info-hint').textContent='微弹面料，适度宽松穿着，填写后辅助判断毛量';
+  document.getElementById('gender-row').style.display='none';
+  renderSteps(5,2);
+  showPage('page-info');
+});
+document.getElementById('opt-ela').addEventListener('click',function(){
+  ST.elbowStyle='ela';
+  document.getElementById('info-tag').textContent='2代半截护肘服（高弹款）· 基本信息';
+  document.getElementById('info-hint').textContent='高弹面料，需刚好合身，填写后辅助判断毛量';
+  document.getElementById('gender-row').style.display='none';
+  renderSteps(5,2);
+  showPage('page-info');
+});
+
+// 品种+体重输入
+['breed','weight'].forEach(id=>{
+  document.getElementById(id).addEventListener('input',function(){
+    const b=document.getElementById('breed').value.trim();
+    const w=document.getElementById('weight').value;
+    document.getElementById('btn-info').disabled=!b||!w||isNaN(parseFloat(w));
+  });
+});
+document.getElementById('gm').addEventListener('click',function(){setGender('male');});
+document.getElementById('gf').addEventListener('click',function(){setGender('female');});
+document.getElementById('gn').addEventListener('click',function(){setGender('');});
+
+document.getElementById('btn-info').addEventListener('click',function(){
+  const b=document.getElementById('breed').value.trim();
+  const w=parseFloat(document.getElementById('weight').value);
+  if(!b||isNaN(w))return;
+  ST.breed=b;ST.weight=w;
+  ST.longLegs=isLongLegs(b);ST.longBody=isLongBody(b);
+
+  const isShirt=ST.category==='shirt';
+  const cat=isShirt?detShirtB(b):detB(b);
+  ST.breedCat=cat;
+
+  // 提前拦截
+  if(cat==='unsuitable'){showResult({type:'unsuitable'},ST.category,ST.elbowStyle);return;}
+  if(isShirt&&cat==='shortBack'){showResult({type:'shortBack'},ST.category,ST.elbowStyle);return;}
+
+  document.getElementById('coat-q').textContent=b+' 的毛发是哪种类型？';
+  const note=document.getElementById('coat-note');
+  document.querySelectorAll('#page-coat .opt').forEach(o=>o.classList.remove('pre'));
+  if(CHINT[cat]){note.textContent=CHINT[cat];note.style.display='block';const def=CDEF[cat];if(def)document.getElementById(def).classList.add('pre');}
+  else note.style.display='none';
+
+  const step=isShirt?2:3;
+  const total=isShirt?4:5;
+  renderSteps(total,step);
+  showPage('page-coat');
+});
+
+// 毛量选择
+[['c-short','short'],['c-curly','curly'],['c-normal','normal'],['c-thick','thick'],['c-super','superFluffy']].forEach(([id,coat])=>{
+  document.getElementById(id).addEventListener('click',function(){
+    ST.coat=coat;
+    const isShirt=ST.category==='shirt';
+    const isEla=ST.elbowStyle==='ela';
+    // 高弹款提示
+    if(!isShirt&&isEla){
+      document.getElementById('chest-q').textContent='有量过胸围吗？（高弹款建议量）';
+      document.getElementById('chest-h').textContent='高弹款按胸围选码更准，防止护垫移位';
+      document.getElementById('chest-note-ela').style.display='block';
+    } else {
+      document.getElementById('chest-q').textContent='有量过胸围吗？';
+      document.getElementById('chest-h').textContent='有数据推荐更准，没有按体重也完全没关系';
+      document.getElementById('chest-note-ela').style.display='none';
+    }
+    document.getElementById('chest-opts').style.display='grid';
+    document.getElementById('chest-input').style.display='none';
+    const step=isShirt?3:4;
+    const total=isShirt?4:5;
+    renderSteps(total,step);
+    showPage('page-chest');
+  });
+});
+
+// 胸围
+document.getElementById('opt-yes').addEventListener('click',function(){
+  document.getElementById('chest-opts').style.display='none';
+  document.getElementById('chest-input').style.display='block';
+  document.getElementById('chest-note-ela').style.display='none';
+});
+document.getElementById('opt-no').addEventListener('click',function(){
+  ST.chest=null;
+  const res=ST.category==='shirt'
+    ?computeShirt(ST.weight,ST.coat,null,ST.breedCat)
+    :computeElbow(ST.weight,ST.coat,null,ST.elbowStyle,ST.breedCat,ST.longBody);
+  showResult(res,ST.category,ST.elbowStyle);
+});
+document.getElementById('chest').addEventListener('input',function(){
+  document.getElementById('btn-chest').disabled=!this.value;
+});
+document.getElementById('btn-chest').addEventListener('click',function(){
+  const c=parseFloat(document.getElementById('chest').value);
+  if(!isNaN(c)){
+    ST.chest=c;
+    const res=ST.category==='shirt'
+      ?computeShirt(ST.weight,ST.coat,c,ST.breedCat)
+      :computeElbow(ST.weight,ST.coat,c,ST.elbowStyle,ST.breedCat,ST.longBody);
+    showResult(res,ST.category,ST.elbowStyle);
+  }
+});
+
+// 尺码表展开/关闭
+document.getElementById('ttog').addEventListener('click',function(){
+  const tw=document.getElementById('twrap');
+  const show=tw.style.display==='none'||tw.style.display==='';
+  tw.style.display=show?'block':'none';
+  this.textContent=show?'▲ 收起尺码表':'▼ 查看完整尺码表（可切换品类对比）';
+  if(show&&activeTab) switchTab(activeTab);
+});
+
+// Tab切换
+document.getElementById('tab-std').addEventListener('click',function(){switchTab('std');});
+document.getElementById('tab-ela').addEventListener('click',function(){switchTab('ela');});
+document.getElementById('tab-shirt').addEventListener('click',function(){switchTab('shirt');});
+
+// ===== 初始化 =====
+renderSteps(2,1);
+showPage('page-home');
+</script>
+</body>
+</html>
