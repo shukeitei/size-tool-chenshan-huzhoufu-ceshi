@@ -205,7 +205,7 @@ input:focus{border-color:#C4714A;box-shadow:2px 2px 0 #C4714A;background:#fff}
           </div>
 
           <div class="ccat ccat-shirt" id="cat-shirt">
-            <div class="ccat-icon">👕</div>
+            <div class="ccat-icon">🌸</div>
             <div class="ccat-body">
               <div class="ccat-name">衬衫系列</div>
               <div class="ccat-desc">全款通用纸板 · 三种面料<br>适合日常穿搭的中大型犬</div>
@@ -315,7 +315,7 @@ input:focus{border-color:#C4714A;box-shadow:2px 2px 0 #C4714A;background:#fff}
   </div>
 
   <div class="footer">
-    宠物服装尺码引擎 v2.1 · © 2026 它小灶和它的边牧 · 未经授权禁止转载
+    尺码推荐引擎 v1.0 · 内部使用
     <span class="brand">它小灶和它的边牧</span>
   </div>
 </div><!-- .wrap -->
@@ -438,8 +438,13 @@ function computeElbow(weight,coat,chest,style,breedCat,longBody){
       else if(pct(weight,idx,SZ)>0.6){idx=cap(idx+1,SZ);notes.push('底毛较厚且体重偏上，升 1 码 → '+SZ[idx].sz);}
       else notes.push('底毛较厚，体重偏下，按体重表选码');
     }
-    if(!isEla&&longBody&&(coat==='normal'||coat==='short'||coat==='curly')){
+    // 常规款：longBody仅在基础结果<=7XL时生效（idx<5），避免8XL再推9XL
+    if(!isEla&&longBody&&(coat==='normal'||coat==='short'||coat==='curly')&&idx<5){
       idx=cap(idx+1,SZ);notes.push('修长体型品种，常规款偏大穿着 → '+SZ[idx].sz);
+    }
+    // 高弹款：longBody仅在体重踩区间上限时触发（pct>=0.85），处理边界升码
+    if(isEla&&longBody&&(coat==='normal'||coat==='short'||coat==='curly')&&pct(weight,idx,SZ)>=0.85){
+      idx=cap(idx+1,SZ);notes.push('修长体型品种，体重在区间上限，升 1 码 → '+SZ[idx].sz);
     }
     if(isEla) notes.push('高弹款建议量胸围更准确，如有误差可联系客服');
   }
